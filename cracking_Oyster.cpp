@@ -1,19 +1,20 @@
-#include <bitset> // in sort
+#include <bitset> // in bitsort
 #include <vector>
 #include <numeric> // in randomVector
 #include <random> // in randomVector
 #include <iostream>
 #include <iterator> // testSmall
 #include <chrono> //in testBig
+#include <algorithm>
 
 using namespace std;
 
-const unsigned int MAX_VALUE = 10000;
+const unsigned int MAX_VALUE = 2000000;
 
-vector<int> sort(vector<int> v){
+vector<int> bitsort(vector<int> v){
 	/*
 	Input: vector with non repeated elements that are in [0, MAX_VALUE[
-	Output: Sorted vector
+	Output: bitsorted vector
 	Complexity:
 		time: MAX_VALUE + c*vector.length
 		space: MAX_VALUE*sizeof(bit)
@@ -27,13 +28,13 @@ vector<int> sort(vector<int> v){
 		else
 			bset.flip(*it);
 	}
-	vector<int> sorted;
+	vector<int> bitsorted;
 	for (int i = 0; i < MAX_VALUE; ++i)
 	{
 		if(bset.test(i))
-			sorted.push_back(i);
+			bitsorted.push_back(i);
 	}
-	return sorted;
+	return bitsorted;
 }
 
 vector<int> randomVector(int n){
@@ -69,7 +70,7 @@ void testSmall(){
 	vector<int> v = randomVector(n);
 	copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
 	cout << endl;
-	v = sort(v);
+	v = bitsort(v);
 	copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
 }
 
@@ -78,12 +79,18 @@ void testBig(int n){
 	chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	vector<int> v = randomVector(n);
 	chrono::steady_clock::time_point end= std::chrono::steady_clock::now();
-	cout << "Time difference for randomVector = " << std::chrono::duration_cast<chrono::microseconds>(end - begin).count() <<endl;
+	cout << "Time for randomVector = " << std::chrono::duration_cast<chrono::microseconds>(end - begin).count() <<endl;
+	
+	vector<int> bitsorted;
+	chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
+	bitsorted = bitsort(v);
+	chrono::steady_clock::time_point end1 = std::chrono::steady_clock::now();
+	cout << "Time for bitsort = " << std::chrono::duration_cast<chrono::microseconds>(end1 - begin1).count() <<endl;
 	
 	chrono::steady_clock::time_point begin2 = std::chrono::steady_clock::now();
-	v = sort(v);
-	chrono::steady_clock::time_point end2= std::chrono::steady_clock::now();
-	cout << "Time difference for sort = " << std::chrono::duration_cast<chrono::microseconds>(end2 - begin2).count() <<endl;
+	sort(v.begin(), v.end());
+	chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
+	cout << "Time for sort = " << std::chrono::duration_cast<chrono::microseconds>(end2 - begin2).count() <<endl;
 	
 }
 
